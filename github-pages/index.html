@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triangle Apartment Shortlist</title>
+<meta name="description" content="2BR/2BA shortlist for Raleigh, Cary, and Morrisville apartments under $1,500/mo">
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, html { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.4; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 24px 16px; }
+
+  header.page-header { margin-bottom: 20px; }
+  header.page-header h1 { font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  header.page-header h1 .ico { width: 24px; height: 24px; flex-shrink: 0; }
+  header.page-header p { font-size: 13px; color: #475569; margin-top: 6px; max-width: 680px; }
+
+  .filters { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); display: flex; flex-wrap: wrap; gap: 24px; }
+  .filter-group { flex: 1 1 200px; min-width: 200px; }
+  .filter-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .btn { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; border: none; cursor: pointer; background: #f1f5f9; color: #334155; transition: background 0.15s; font-family: inherit; }
+  .btn:hover { background: #e2e8f0; }
+  .btn.active { background: #0f172a; color: #fff; }
+
+  .count { font-size: 12px; color: #64748b; padding: 0 4px 12px; }
+
+  .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1180px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+  .card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; border-left-width: 4px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: box-shadow 0.15s; display: flex; flex-direction: column; }
+  .card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.06); }
+  .card.green { border-left-color: #10b981; }
+  .card.yellow { border-left-color: #f59e0b; }
+  .card.red { border-left-color: #f43f5e; }
+  .card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+
+  .top-row { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+  .top-row-left { min-width: 0; flex: 1; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+  .badge { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 4px; border: 1px solid; text-transform: uppercase; }
+  .badge.green { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+  .badge.yellow { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+  .badge.red { background: #ffe4e6; color: #9f1239; border-color: #fecdd3; }
+  .badge-city { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px; border: 1px solid; text-transform: none; letter-spacing: 0; }
+  .badge-city.raleigh { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+  .badge-city.cary { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
+  .badge-city.morrisville { background: #f0fdfa; color: #0f766e; border-color: #99f6e4; }
+
+  .name { font-size: 17px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .neighborhood { font-size: 11px; color: #64748b; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+  .verdict-icon { width: 18px; height: 18px; flex-shrink: 0; }
+  .verdict-icon.green { color: #059669; }
+  .verdict-icon.yellow { color: #d97706; }
+  .verdict-icon.red { color: #e11d48; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; padding: 12px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+  .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; font-weight: 500; }
+  .stat-val { font-size: 17px; font-weight: 700; color: #0f172a; line-height: 1.2; margin-top: 2px; }
+  .stat-sub { font-size: 10px; color: #64748b; margin-top: 1px; }
+  .star { color: #f59e0b; }
+  .star-line { display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 13px; font-weight: 600; }
+  .star-line .ct { font-size: 10px; color: #64748b; font-weight: 400; }
+  .star-line .ct.small-sample { color: #f43f5e; }
+
+  .section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 4px; }
+  .section-label.good { color: #047857; }
+  .section-label.bad { color: #be123c; }
+  ul { list-style: none; }
+  li { display: flex; gap: 6px; font-size: 12px; color: #334155; line-height: 1.5; margin-bottom: 2px; }
+  li .sym { flex-shrink: 0; font-weight: 700; }
+  li .sym.good { color: #10b981; }
+  li .sym.bad { color: #f43f5e; }
+  .pros, .cons { margin-bottom: 10px; }
+
+  .view-btn { margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 14px; background: #0f172a; color: #fff; font-size: 13px; font-weight: 500; border-radius: 8px; text-decoration: none; transition: background 0.15s; }
+  .view-btn:hover { background: #1e293b; }
+  .view-btn svg { width: 13px; height: 13px; }
+
+  .empty { text-align: center; padding: 60px 0; color: #64748b; font-size: 13px; }
+
+  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; line-height: 1.6; }
+  footer .legend { margin-top: 4px; }
+  footer .v { font-weight: 500; }
+  footer .v.green { color: #047857; }
+  footer .v.yellow { color: #b45309; }
+  footer .v.red { color: #be123c; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page-header">
+    <h1>
+      <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Triangle Apartment Shortlist
+    </h1>
+    <p>2BR / 2BA, 1,000+ sqft, under $1,500/mo, in-unit washer/dryer, in Raleigh, Cary, or Morrisville. Rankings blend rent, square footage, online ratings, and review-based safety/quality verdicts.</p>
+  </header>
+
+  <section class="filters">
+    <div class="filter-group">
+      <div class="filter-label">Verdict</div>
+      <div class="btn-row" id="verdict-filters"></div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">City</div>
+      <div class="btn-row" id="city-filters"></div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">
+        <svg width="11" height="11" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>
+        Sort
+      </div>
+      <div class="btn-row" id="sort-filters"></div>
+    </div>
+  </section>
+
+  <div class="count" id="count-line"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">No properties match these filters.</div>
+
+  <footer>
+    <p>Data from apartments.com listings + ApartmentRatings/Birdeye reviews. Verify all details by phone before applying.</p>
+    <p class="legend">Verdicts: <span class="v green">STRONG PICK</span> = clean review profile, <span class="v yellow">TOUR & VERIFY</span> = decent but ask about specific issue, <span class="v red">AVOID</span> = red-flagged in reviews.</p>
+  </footer>
+</div>
+
+<script>
+const LISTINGS = [
+  { name: "MAA Brierdale", city: "Raleigh", neighborhood: "Brier Creek", rent: 1207, sqft: 1186, beds: 2, baths: 2, rating: 4.1, reviews: 524, verdict: "yellow",
+    pros: ["Best price-per-sqft on the list", "Big review sample (524)", "Brier Creek = suburban + safe"],
+    cons: ["Staff & grounds subscores in low 3s", "Confirm 3x vs 3.5x income multiplier"],
+    url: "https://www.apartments.com/maa-brierdale-raleigh-nc/6f29vev/" },
+  { name: "MAA Preserve", city: "Raleigh", neighborhood: "Brier Creek", rent: 1448, sqft: 1296, beds: 2, baths: 2, rating: 4.1, reviews: 720, verdict: "green",
+    pros: ["Largest unit on the list (1,296 sqft)", "4.1&starf; on 720 reviews &mdash; strong sample", "Resort-style pool, well-kept grounds"],
+    cons: ["$100+/mo renewal hikes flagged &mdash; negotiate cap up front"],
+    url: "https://www.apartments.com/maa-preserve-raleigh-nc/ctwfkee/" },
+  { name: "MAA Providence", city: "Raleigh", neighborhood: "Brier Creek", rent: 1458, sqft: 1102, beds: 2, baths: 2, rating: 4.3, reviews: 400, verdict: "green",
+    pros: ["Cleanest review profile of all 14", "Fast efficient maintenance", "Long-tenure residents (4&ndash;5 years)"],
+    cons: ["Minor: parking can pinch at peak times"],
+    url: "https://www.apartments.com/maa-providence-raleigh-nc/6emdqjs/" },
+  { name: "MAA 900 Waterford", city: "Cary", neighborhood: "North Cary", rent: 1493, sqft: 1115, beds: 2, baths: 2, rating: 4.0, reviews: 798, verdict: "green",
+    pros: ["Largest review sample on the list (798)", "Cary = one of safest cities in metro", "Mgmt responds to 97% of reviews"],
+    cons: ["Verify whether microwave is included", "Some units have older appliances/carpet"],
+    url: "https://www.apartments.com/maa-900-waterford-cary-nc/261mf99/" },
+  { name: "Treybrooke at the Park", city: "Morrisville", neighborhood: "Morrisville", rent: 1399, sqft: 1100, beds: 2, baths: 2, rating: 4.3, reviews: 267, verdict: "yellow",
+    pros: ["1 month free promo", "Walk-in closets + fireplace", "Responsive maintenance team"],
+    cons: ["Recurring pest reports &mdash; ASK about treatment history"],
+    url: "https://www.apartments.com/treybrooke-at-the-park-morrisville-nc/vtt5tyf/" },
+  { name: "Abberly Grove", city: "Raleigh", neighborhood: "SE Raleigh", rent: 1469, sqft: 1118, beds: 2, baths: 2, rating: 4.9, reviews: 18, verdict: "yellow",
+    pros: ["3 months free move-in special", "Internet included", "Granite + walk-in closets"],
+    cons: ["&#9888; ZIP 27610 &mdash; historically higher-crime area, visit in person", "Only 18 reviews &mdash; small/noisy sample"],
+    url: "https://www.apartments.com/abberly-grove-apartment-homes-raleigh-nc/gzydxdy/" },
+  { name: "Reserve at Cary Park", city: "Cary", neighborhood: "Cary Park", rent: 1495, sqft: null, beds: 2, baths: 2, rating: 4.4, reviews: 523, verdict: "yellow",
+    pros: ["Spacious open-concept units", "Near top-rated schools", "Long-tenure residents (8+ years)"],
+    cons: ["Confirm 2/2 floor plan &ge;1000 sqft by phone", "Parking + pest reports &mdash; ask explicitly"],
+    url: "https://www.apartments.com/reserve-at-cary-park-cary-nc/g0betmx/" },
+  { name: "MAA Arringdon", city: "Morrisville", neighborhood: "RTP/Morrisville", rent: 1428, sqft: 1054, beds: 2, baths: 2, rating: 3.9, reviews: 616, verdict: "yellow",
+    pros: ["Big review sample (616)", "No breed restrictions for pets", "Spacious units with W/D, pantry"],
+    cons: ["Car break-ins flagged (safety subscore 3.2/5)", "Thin walls"],
+    url: "https://www.apartments.com/maa-arringdon-morrisville-nc/k8v1vr8/" },
+  { name: "Huntington Apartments", city: "Morrisville", neighborhood: "Duck Pond", rent: 1423, sqft: 1075, beds: 2, baths: 2, rating: 3.7, reviews: 81, verdict: "yellow",
+    pros: ["Beautiful pond setting", "Quiet 2-story buildings", "Screened porches"],
+    cons: ["New management since ~2024 getting weaker reviews", "Maintenance turnover"],
+    url: "https://www.apartments.com/huntington-apartments-morrisville-nc/ljxbtzg/" },
+  { name: "District at 54", city: "Raleigh", neighborhood: "SW Raleigh", rent: 1418, sqft: 1111, beds: 2, baths: 2, rating: null, reviews: null, verdict: "yellow",
+    pros: ["Only complex on list with confirmed elevator", "Built 2023 &mdash; modern amenities"],
+    cons: ["Confirm $1,418 is base (vs Total Monthly ~$2,210)", "Hwy 54 noise reported", "<15 reviews &mdash; too few to judge"],
+    url: "https://www.apartments.com/district-at-54-raleigh-nc/0njghh3/" },
+  { name: "Weston Reserve", city: "Morrisville", neighborhood: "Morrisville", rent: 1320, sqft: 1127, beds: 2, baths: 2, rating: 3.7, reviews: 264, verdict: "red",
+    pros: ["Cheap for the size", "Gated community"],
+    cons: ["Maintenance subscore 1.7/5 &mdash; major red flag", "Safety subscore 2.3/5", "Roach reports"],
+    url: "https://www.apartments.com/weston-reserve-apartments-morrisville-nc/nztslyn/" },
+  { name: "Woodlyn on the Green", city: "Cary", neighborhood: "North Cary", rent: 1237, sqft: 1181, beds: 2, baths: 2, rating: 2.9, reviews: 321, verdict: "red",
+    pros: ["Cheap base rent for Cary", "Convenient location near walking trails"],
+    cons: ["2.9&starf; aggregate &mdash; poor", "Hidden fees: invoice, admin, trash, pest", "Income-restricted property"],
+    url: "https://www.apartments.com/woodlyn-on-the-green-apartment-homes-cary-nc/y0v6qgs/" },
+  { name: "Perry Point", city: "Raleigh", neighborhood: "NE Raleigh", rent: 1422, sqft: 1157, beds: 2, baths: 2, rating: null, reviews: 108, verdict: "red",
+    pros: ["Lower price point for the sqft"],
+    cons: ["&#9888; Documented shooting incidents on property", "Drug activity reported", "BBB C+ rating", "German roach issues"],
+    url: "https://www.apartments.com/perry-point-raleigh-nc/v5fe1qd/" },
+  { name: "Preston View", city: "Morrisville", neighborhood: "Preston", rent: 1431, sqft: 1155, beds: 2, baths: 2, rating: 3.4, reviews: 254, verdict: "red",
+    pros: ["Hardwood floors", "24-hr gym"],
+    cons: ["Cockroach infestations not resolved", "Move-in repairs ignored for weeks", "Property manager turnover"],
+    url: "https://www.apartments.com/preston-view-morrisville-nc/g2789zx/" },
+];
+
+const VERDICT_LABEL = { green: "STRONG PICK", yellow: "TOUR & VERIFY", red: "AVOID" };
+const VERDICT_RANK = { green: 3, yellow: 2, red: 1 };
+
+const ICON_CHECK = '<svg class="verdict-icon green" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+const ICON_WARN_Y = '<svg class="verdict-icon yellow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
+const ICON_WARN_R = '<svg class="verdict-icon red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
+const ICON_PIN = '<svg width="11" height="11" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+const ICON_EXT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
+const ICON_STAR = '<svg width="13" height="13" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+
+let state = { verdict: "all", city: "all", sort: "score" };
+
+function counts() {
+  return {
+    all: LISTINGS.length,
+    green: LISTINGS.filter(l => l.verdict === "green").length,
+    yellow: LISTINGS.filter(l => l.verdict === "yellow").length,
+    red: LISTINGS.filter(l => l.verdict === "red").length,
+  };
+}
+
+function uniqueCities() {
+  return ["all", ...Array.from(new Set(LISTINGS.map(l => l.city)))];
+}
+
+function filtered() {
+  let arr = LISTINGS.slice();
+  if (state.verdict !== "all") arr = arr.filter(l => l.verdict === state.verdict);
+  if (state.city !== "all") arr = arr.filter(l => l.city === state.city);
+  arr.sort((a, b) => {
+    if (state.sort === "rent") return a.rent - b.rent;
+    if (state.sort === "rating") return (b.rating || 0) - (a.rating || 0);
+    if (state.sort === "sqft") return (b.sqft || 0) - (a.sqft || 0);
+    const va = VERDICT_RANK[a.verdict] || 0, vb = VERDICT_RANK[b.verdict] || 0;
+    if (va !== vb) return vb - va;
+    const ra = a.rating || 3.5, rb = b.rating || 3.5;
+    if (rb !== ra) return rb - ra;
+    return a.rent - b.rent;
+  });
+  return arr;
+}
+
+function escape(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function renderCard(p) {
+  const verdictIcon = p.verdict === "green" ? ICON_CHECK : (p.verdict === "yellow" ? ICON_WARN_Y : ICON_WARN_R);
+  const psf = p.sqft ? "$" + (p.rent / p.sqft).toFixed(2) + "/sqft" : "";
+  const ratingHtml = p.rating
+    ? `<div class="star-line">${ICON_STAR}<span>${p.rating.toFixed(1)}</span>${p.reviews ? `<span class="ct${p.reviews < 30 ? ' small-sample' : ''}">(${p.reviews.toLocaleString()})</span>` : ''}</div>`
+    : `<div class="stat-sub" style="font-style:italic;color:#94a3b8">No rating</div>`;
+  const sqftDisp = p.sqft ? p.sqft.toLocaleString() : "&mdash;";
+  const cityClass = p.city.toLowerCase();
+  return `
+    <div class="card ${p.verdict}">
+      <div class="card-body">
+        <div class="top-row">
+          <div class="top-row-left">
+            <div class="badges">
+              <span class="badge ${p.verdict}">${VERDICT_LABEL[p.verdict]}</span>
+              <span class="badge-city ${cityClass}">${escape(p.city)}</span>
+            </div>
+            <div class="name" title="${escape(p.name)}">${escape(p.name)}</div>
+            <div class="neighborhood">${ICON_PIN}<span>${escape(p.neighborhood)}</span></div>
+          </div>
+          ${verdictIcon}
+        </div>
+
+        <div class="stats">
+          <div>
+            <div class="stat-label">Rent</div>
+            <div class="stat-val">$${p.rent.toLocaleString()}</div>
+            ${psf ? `<div class="stat-sub">${psf}</div>` : ''}
+          </div>
+          <div>
+            <div class="stat-label">Size</div>
+            <div class="stat-val">${sqftDisp}<span style="font-size:11px;color:#64748b;margin-left:3px;font-weight:400">sqft</span></div>
+            <div class="stat-sub">${p.beds}bd / ${p.baths}ba</div>
+          </div>
+          <div>
+            <div class="stat-label">Rating</div>
+            ${ratingHtml}
+          </div>
+        </div>
+
+        <div class="pros">
+          <div class="section-label good">What's good</div>
+          <ul>${p.pros.map(x => `<li><span class="sym good">+</span><span>${escape(x)}</span></li>`).join("")}</ul>
+        </div>
+        <div class="cons">
+          <div class="section-label bad">Watch out for</div>
+          <ul>${p.cons.map(x => `<li><span class="sym bad">&minus;</span><span>${escape(x)}</span></li>`).join("")}</ul>
+        </div>
+
+        <a class="view-btn" href="${escape(p.url)}" target="_blank" rel="noopener noreferrer">View Listing ${ICON_EXT}</a>
+      </div>
+    </div>`;
+}
+
+function renderFilters() {
+  const c = counts();
+  const verdictOpts = [
+    { k: "all", label: `All (${c.all})` },
+    { k: "green", label: `Strong (${c.green})` },
+    { k: "yellow", label: `Tour (${c.yellow})` },
+    { k: "red", label: `Avoid (${c.red})` },
+  ];
+  document.getElementById("verdict-filters").innerHTML = verdictOpts.map(o =>
+    `<button class="btn ${state.verdict === o.k ? "active" : ""}" data-filter="verdict" data-val="${o.k}">${o.label}</button>`
+  ).join("");
+
+  const cityOpts = uniqueCities().map(c => ({ k: c, label: c === "all" ? "All cities" : c }));
+  document.getElementById("city-filters").innerHTML = cityOpts.map(o =>
+    `<button class="btn ${state.city === o.k ? "active" : ""}" data-filter="city" data-val="${o.k}">${o.label}</button>`
+  ).join("");
+
+  const sortOpts = [
+    { k: "score", label: "Best match" },
+    { k: "rent", label: "Cheapest" },
+    { k: "rating", label: "Top rated" },
+    { k: "sqft", label: "Largest" },
+  ];
+  document.getElementById("sort-filters").innerHTML = sortOpts.map(o =>
+    `<button class="btn ${state.sort === o.k ? "active" : ""}" data-filter="sort" data-val="${o.k}">${o.label}</button>`
+  ).join("");
+}
+
+function renderGrid() {
+  const list = filtered();
+  document.getElementById("count-line").textContent = `Showing ${list.length} of ${LISTINGS.length} properties`;
+  document.getElementById("grid").innerHTML = list.map(renderCard).join("");
+  document.getElementById("empty").style.display = list.length === 0 ? "block" : "none";
+}
+
+function rerender() { renderFilters(); renderGrid(); }
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-filter]");
+  if (!btn) return;
+  state[btn.dataset.filter] = btn.dataset.val;
+  rerender();
+});
+
+rerender();
+</script>
+
+</body>
+</html>
